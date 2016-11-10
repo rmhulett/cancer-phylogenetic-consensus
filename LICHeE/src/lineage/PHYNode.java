@@ -32,7 +32,7 @@ package lineage;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import lineage.AAFClusterer.Cluster;
+import lineage.Cluster;
 
 /**
  * Node in the phylogenetic graph

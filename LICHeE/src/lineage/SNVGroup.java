@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import lineage.AAFClusterer.Cluster;
+import lineage.Cluster;
 
 /**
  * An SNV group is a set of SNVs occurring in a given subset of samples.
