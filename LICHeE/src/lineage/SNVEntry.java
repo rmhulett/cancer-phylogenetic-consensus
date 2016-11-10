@@ -34,8 +34,6 @@ package lineage;
 
 import java.util.ArrayList;
 
-import util.CNVRegion;
-
 public class SNVEntry {
 	
 	/** SNV entry info */
@@ -48,13 +46,10 @@ public class SNVEntry {
 	protected double[] VAF;
 	protected boolean isRobust;
 	protected String snvEntryString;
-	protected boolean inCNVRegion;
-	protected String annotation;
 	 
 	public SNVEntry(String line, int lineId) {
 		id = lineId;
 		snvEntryString = line;
-		annotation = "";
 	}
 	
 	public int getId() {
@@ -107,34 +102,6 @@ public class SNVEntry {
 	
 	public boolean evidenceOfPresence(int sample){
 		return (VAF[sample] > Parameters.MAX_VAF_ABSENT );
-	}
-	
-	public String getAnnotation() {
-		return annotation;
-	}
-	
-	public void addAnnotation(String ann) {
-		annotation += ann + "; ";
-	}
-
-	public boolean checkInCNVRegion(ArrayList<CNVRegion> CNVs) {
-		for (CNVRegion cnv : CNVs){
-			int loc = cnv.compareLocation(chr, position);
-			if (loc == 0) {
-				inCNVRegion = true;
-				return true;
-			}
-			if (loc == -1) {
-				inCNVRegion = false;
-				return false;
-			}
-		}
-		inCNVRegion = false;
-		return false;
-	}
-	
-	public boolean isInCNVRegion() {
-		return inCNVRegion;
 	}
 	
 	public String toString() {
