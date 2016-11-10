@@ -200,9 +200,8 @@ public class PHYTree implements Serializable {
 		//indent += "     ";	
 		indent += ".....";	
 		
-		DecimalFormat df = new DecimalFormat("#.###");
 		if(n.getSNVGroup().containsSample(sampleId)) {
-			lineage.append(indent + n.getSNVGroup().getTag() + ": " + df.format(n.getAAF(sampleId)) + " [" + df.format(n.getStdDev(sampleId)) + "]\n");
+			lineage.append(indent + n.getSNVGroup().getTag() + ": " + n.getCluster().getId() + "\n");
 		}
 		if(treeEdges.get(n) != null) {
 			for(PHYNode nbr : treeEdges.get(n)) {

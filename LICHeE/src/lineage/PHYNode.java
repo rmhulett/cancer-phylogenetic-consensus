@@ -135,43 +135,6 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 	}
 
 	/**
-	 * Returns the cluster centroid AAF for the given sample id
-	 * Returns 0 if the sample is not represented
-	 */
-	public double getAAF(int sampleId) {
-		if(isRoot) {
-			return Parameters.VAF_MAX;
-		} 
-		if(isLeaf) {
-			return 0;
-		}	
-		int sampleIndex = snvGroup.getSampleIndex(sampleId);
-		if(sampleIndex == -1) {
-			return 0;
-		}
-		return cluster.getCentroid()[sampleIndex];
-	}
-	
-	/**
-	 * Returns the cluster standard deviation for the given sample id
-	 * Returns 0 if the sample is not represented
-	 */
-	public double getStdDev(int sampleId) {
-		if(isRoot) {
-			return 0;
-		} 
-		if(isLeaf) {
-			return 0;
-		}
-		
-		int sampleIndex = snvGroup.getSampleIndex(sampleId);
-		if(sampleIndex == -1) {
-			return 0;
-		}
-		return cluster.getStdDev()[sampleIndex];
-	}
-	
-	/**
 	 * Returns the SNV entries in the cluster
 	 * corresponding to this node
 	 */

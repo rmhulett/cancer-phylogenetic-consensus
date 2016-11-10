@@ -54,7 +54,7 @@ public class AAFClusterer implements Serializable {
 
 	/**
 	 * Cluster of observation points
-	 * Each cluster has an associated centroid point and a list of members
+	 * Each cluster has a list of members
 	 */
 	public class Cluster implements Serializable {
 		
@@ -63,25 +63,17 @@ public class AAFClusterer implements Serializable {
 		/** Cluster id, unique per group */
 		private int id;
 		
-		/** Cluster centroid */
-		private double[] centroid;
-		
-		/** Cluster standard deviation */
-		private double[] stdDev = null;
-		
 		/** List of observations assigned to this cluster */
 		private ArrayList<Integer> members;
 		
 		private boolean robust = false;
 		
-		public Cluster(double[] clusterCentroid, int clusterId) {
-			centroid = clusterCentroid;
+		public Cluster(int clusterId) {
 			members = new ArrayList<Integer>();
 			id = clusterId;
 		}
 		
-		public Cluster(double[] clusterCentroid, ArrayList<Integer> assignments, int clusterId) {
-			centroid = clusterCentroid;
+		public Cluster(ArrayList<Integer> assignments, int clusterId) {
 			members = assignments;
 			id = clusterId;
 			
@@ -93,26 +85,6 @@ public class AAFClusterer implements Serializable {
 		 */
 		public void addMember(int obsId) {
 			members.add(new Integer(obsId));
-		}
-		
-		/**
-		 * Returns the cluster centroid (mean) per sample
-		 */
-		public double[] getCentroid() {
-			return centroid;
-		}
-		
-		/**
-		 * Returns the standard deviation per sample
-		 * @requires setStdDev() method to have been called (currently implemented for EM only),
-		 * will return null otherwise
-		 */
-		public double[] getStdDev() {
-			return stdDev;
-		}
-		
-		public void setStdDev(double[] dev) {
-			stdDev = dev;
 		}
 		
 		public ArrayList<Integer> getMembership() {
@@ -134,19 +106,9 @@ public class AAFClusterer implements Serializable {
 		public String toString() {
 			String c = "";
 			c += "Size: " + members.size() + "\n";
-			DecimalFormat df = new DecimalFormat("#.##");
-			c += "VAF Mean: [";
-			for(int i = 0; i < centroid.length; i++) {
-				c += " " + df.format(centroid[i]) + " ";
-			}
-			c += "] \n";
-			c += "       Stdev:";
-			if(stdDev != null) {
-				c += " [";
-				for(int i = 0; i < stdDev.length; i++) {
-					c += " " + df.format(stdDev[i]) + " ";
-				}
-				c += "]";
+			c += "Members: ["
+			for(int i = 0; i < members.size(); i++) {
+				c += members.get(i) + ", "
 			}
 			return c;
 		}

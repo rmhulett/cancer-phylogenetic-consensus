@@ -59,9 +59,6 @@ public class SNVGroup implements Serializable {
 	/** Indices of the samples represented in this group (from 0 to |tag|-1 MSF order) */
 	private int[] sampleIndex;
 	
-	/** Alternative allele frequency data matrix (numSNVs x numSamples) */
-	protected transient double[][] alleleFreqBySample;
-	
 	/** SubPopulation clusters */
 	protected Cluster[] subPopulations;
 	
@@ -85,13 +82,6 @@ public class SNVGroup implements Serializable {
 			}
 		}
 		snvs = groupSNVs;
-		alleleFreqBySample = new double[snvs.size()][numSamples];
-		for(int i = 0; i < snvs.size(); i++) {
-			SNVEntry snv = snvs.get(i);
-			for(int j = 0; j < numSamples; j++) {
-				alleleFreqBySample[i][j] = snv.getVAF(sampleIndex[j]);
-			}
-		}
 	}
 
 	public SNVGroup(String groupTag, double[] centroid, int size) {
@@ -106,20 +96,11 @@ public class SNVGroup implements Serializable {
 				numSamples++;
 			}
 		}
-		double[] c = new double[numSamples];
-		int idx = 0;
-		for(int i = 0; i < tag.length(); i++) {
-			if(tag.charAt(i) == '1') {
-				c[idx] = centroid[i];
-				idx++;
-			}
-		}
 		
 		snvs = new ArrayList<SNVEntry>();
-		alleleFreqBySample = new double[snvs.size()][numSamples];
 		subPopulations = new Cluster[1];
 		AAFClusterer aafc = new AAFClusterer();
-		subPopulations[0] = aafc.new Cluster(c, 0);
+		subPopulations[0] = aafc.new Cluster(0);
 		
 		
 	}
@@ -128,10 +109,6 @@ public class SNVGroup implements Serializable {
 	
 	public ArrayList<SNVEntry> getSNVs() {
 		return snvs;
-	}
-	
-	public double[][] getAlleleFreqBySample() {
-		return alleleFreqBySample;
 	}
 	
 	public int getNumSamples() {
