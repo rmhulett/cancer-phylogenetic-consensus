@@ -62,40 +62,34 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 	/** Debugging-only node id */
 	private int nodeId;
 	
-	/** Level in the constraint network */
-	private int level;
-	
 	/** 
 	 * Internal node constructor
 	 * @param g - SNV group the node belongs to
 	 * @param nodeClusterId
 	 */
-	public PHYNode(SNVGroup g, int nodeClusterId, int networkLevel, int uniqueId) {
+	public PHYNode(SNVGroup g, int nodeClusterId, int uniqueId) {
 		snvGroup = g;
 		cluster = snvGroup.getSubPopulations()[nodeClusterId];
 		isLeaf = false;
 		nodeId = uniqueId;
-		level = networkLevel;
 	}
 	
 	/**
 	 * Leaf node constructor - represents each tumor sample
 	 * @param sampleId - ID of the represented tumor sample
 	 */
-	public PHYNode(int networkLevel, int sampleId, int uniqueId) {
+	public PHYNode(int sampleId, int uniqueId) {
 		isLeaf = true;
 		leafSampleId = sampleId;
 		nodeId = uniqueId;
-		level = 0;
 	}
 	
 	/**
 	 * Root node constructor
 	 */
-	public PHYNode(int networkLevel, int uniqueId) {
+	public PHYNode(int uniqueId) {
 		isRoot = true;
 		nodeId = uniqueId;
-		level = networkLevel;
 	}
 	
 	/**
@@ -131,10 +125,6 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 		return nodeId;
 	}
 	
-	public int getLevel() {
-		return level;
-	}
-	
 	public SNVGroup getSNVGroup() {
 		return snvGroup;
 	}
@@ -143,17 +133,7 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 		if(cluster == null) return 0;
 		return cluster.getMembership().size();
 	}
-	
-	/**
-	 * Returns the total number of samples in the network
-	 */
-	public int getNumSamples() {
-		if(isRoot) {
-			return level-1;
-		}
-		return snvGroup.getNumSamplesTotal();
-	}
-	
+
 	/**
 	 * Returns the cluster centroid AAF for the given sample id
 	 * Returns 0 if the sample is not represented

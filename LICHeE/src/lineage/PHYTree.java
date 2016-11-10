@@ -41,7 +41,7 @@ import java.util.HashMap;
  * 
  * @autor viq
  */
-public class PHYTree implements Comparable<PHYTree>, Serializable {
+public class PHYTree implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public ArrayList<PHYNode> treeNodes;
@@ -153,26 +153,6 @@ public class PHYTree implements Comparable<PHYTree>, Serializable {
 		return false;
 	}
 	
-	public boolean checkConstraint(PHYNode n) {
-		ArrayList<PHYNode> nbrs = treeEdges.get(n);			
-		if(nbrs == null) return true;
-				
-		for(int i = 0; i < n.getNumSamples(); i++) {
-			double affSum = 0;
-			double errMargin = 0.0;
-			for(PHYNode n2 : nbrs) {
-				affSum += n2.getAAF(i);
-				//errMargin += PHYNetwork.getAAFErrorMargin(n, n2, i);
-			}
-			errMargin = Parameters.VAF_ERROR_MARGIN;
-			if(affSum > n.getAAF(i) + errMargin) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
 	public String toString() {
 		String graph = "";
 		for(PHYNode n1 : treeEdges.keySet()) {
@@ -197,43 +177,6 @@ public class PHYTree implements Comparable<PHYTree>, Serializable {
     		s += "\n";
 		}
 		return s;
-	}
-	
-	
-	/** 
-	 * Returns the error score associated with the tree, 
-	 * which is the sqrt of the sum of the children AAF sum deviation from the parent AAF
-	 */
-	public double getErrorScore() {
-		if(errorScore == -1) {
-			computeErrorScore();
-		}
-		return errorScore;
-	}
-	
-	public double computeErrorScore() {
-		ArrayList<PHYNode> nodes = new ArrayList<PHYNode>(treeEdges.keySet());
-		Collections.sort(nodes);
-		
-		double err = 0;
-		for(PHYNode n : nodes) {
-			ArrayList<PHYNode> nbrs = treeEdges.get(n);			
-			for(int i = 0; i < n.getNumSamples(); i++) {
-				double affSum = 0;
-				for(PHYNode n2 : nbrs) {
-					affSum += n2.getAAF(i);
-				}
-				if(affSum > n.getAAF(i)) {
-					err += Math.pow(affSum - n.getAAF(i), 2);
-				}
-			}
-		}
-		errorScore = Math.sqrt(err);
-		return errorScore;
-	}
-	
-	public int compareTo(PHYTree t) {
-		return new Double(this.getErrorScore()).compareTo(t.getErrorScore());
 	}
 	
 	/**
