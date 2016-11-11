@@ -8,23 +8,24 @@ package consensus;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import lineage.Cluster;
 
 /**
  * Node in the phylogenetic graph
  * Represents a sub-population or sample (if leaf)
- * Is associated with a given AAF (alternative allele frequency)
  * 
  * @autor viq
  */
 public class PHYNode implements Serializable, Comparable<PHYNode> {
 	private static final long serialVersionUID = 1L;
 
+	/** Node/cluster id */
+	private int nodeId;
+
 	/** Sub-population cluster that the node represents */
-	private Cluster cluster;		
+	private ArrayList<SNVEntry> snvs;		
 	
-	/** SNV group the node belongs to */
-	protected SNVGroup snvGroup;
+	/** The node's sample presence profile */
+	protected SampleProfile sampleProfile;
 	
 	/** Flag indicating if the node is a sample leaf*/
 	protected boolean isLeaf;
@@ -35,17 +36,14 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 	/** The sample id if node is a leaf*/
 	private int leafSampleId;
 	
-	/** Debugging-only node id */
-	private int nodeId;
-	
 	/** 
 	 * Internal node constructor
 	 * @param g - SNV group the node belongs to
 	 * @param nodeClusterId
 	 */
-	public PHYNode(SNVGroup g, int nodeClusterId, int uniqueId) {
-		snvGroup = g;
-		cluster = snvGroup.getSubPopulations()[nodeClusterId];
+	public PHYNode(SampleProfile p, ArrayList<SNVEntry> s, int uniqueId) {
+		sampleProfile = p;
+		snvs = s;
 		isLeaf = false;
 		nodeId = uniqueId;
 	}
@@ -66,13 +64,6 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 	public PHYNode(int uniqueId) {
 		isRoot = true;
 		nodeId = uniqueId;
-	}
-	
-	/**
-	 * Returns the SNV cluster that this node represents
-	 */
-	public Cluster getCluster() {
-		return cluster;
 	}
 	
 	/**
@@ -101,33 +92,32 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 		return nodeId;
 	}
 	
-	public SNVGroup getSNVGroup() {
-		return snvGroup;
+	public SNVGroup getSampleProfile() {
+		return sampleProfile;
 	}
 	
 	public int getSize() {
-		if(cluster == null) return 0;
-		return cluster.getMembership().size();
+		if(snvs == null) return 0;
+		return snvs.size();
 	}
 
 	/**
 	 * Returns the SNV entries in the cluster
 	 * corresponding to this node
 	 */
-	public ArrayList<SNVEntry> getSNVs(ArrayList<SNVEntry> groupSNVs) {
-		ArrayList<Integer> ids = cluster.getMembership();
-		ArrayList<SNVEntry> nodeSNVs = new ArrayList<SNVEntry>();
-		for(int i : ids) {
-			nodeSNVs.add(groupSNVs.get(i));
-		}
-		return nodeSNVs;
+	public ArrayList<SNVEntry> getSNVs() {
+		return snvs;
 	}
 	
 	public String toString() {
 		String node = "Node " + nodeId + ": ";
 		if(!isLeaf && !isRoot) {
 			node += "group tag = " + snvGroup.getTag() + ", ";
-			node += cluster.toString();
+			node += "["
+			for (int i = 0; i < snvs.size(); i++) {
+				node += snvs.get(i).toString() + ", "
+			}
+			node += "]"
 		} else if(isLeaf) {
 			node += "leaf sample id = " + leafSampleId;
 		} 
@@ -138,8 +128,8 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 		String node = "";
 		if(!isLeaf && !isRoot) {
 			//node += nodeId + ": \n";
-			node += snvGroup.getTag() + "\n";
-			node += "("+cluster.getMembership().size()+")";
+			node += sampleProfile.getTag() + "\n";
+			node += "("+snvs.size()+")";
 		} else if(isLeaf) {
 			node += "sample " + leafSampleId;
 		} else {
@@ -151,8 +141,12 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 	public String getLongLabel() {
 		String node = "";
 		if(!isLeaf && !isRoot) {
-			node += "Group: " + snvGroup.getTag() + "\n";
-			node += cluster.toString();
+			node += "Group: " + sampleProfile.getTag() + "\n";
+			node += "["
+			for (int i = 0; i < snvs.size(); i++) {
+				node += snvs.get(i) + ", "
+			}
+			node += "]"
 		} else if(isLeaf) {
 			node += "sample " + leafSampleId;
 		} else {

@@ -3,13 +3,12 @@
 */
 
 
+package consensus;
+
+
 /**
  * Represents an SNV entry
  */
-package consensus;
-
-import java.util.ArrayList;
-
 public class SNVEntry {
 	
 	/** SNV entry info */
@@ -18,8 +17,6 @@ public class SNVEntry {
 	protected int position;
 	protected String description;
 	protected String presenceProfile;
-	protected String ambigPresenceProfile;
-	protected double[] VAF;
 	protected boolean isRobust;
 	protected String snvEntryString;
 	 
@@ -47,11 +44,6 @@ public class SNVEntry {
 		return description;
 	}
 	
-	/** Returns the VAF in sample i */
-	public double getVAF(int i) {
-		return VAF[i];
-	}
-	
 	/** Returns true if the SNV was robustly called in all samples  */
 	public boolean isRobust() {
 		return isRobust;
@@ -62,10 +54,6 @@ public class SNVEntry {
 		return presenceProfile;
 	}
 	
-	public String getAmbigProfile() {
-		return ambigPresenceProfile;
-	}
-	
 	/** Sets the sample presence-absence profile */
 	public void updateGroup(String code) {
 		presenceProfile = code;
@@ -74,10 +62,6 @@ public class SNVEntry {
 	/** Returns true if profile[sampleId] == 1 */
 	public boolean isPresent(int sampleId) {
 		return presenceProfile.charAt(sampleId) == '1';
-	}
-	
-	public boolean evidenceOfPresence(int sample){
-		return (VAF[sample] > Parameters.MAX_VAF_ABSENT );
 	}
 	
 	public String toString() {

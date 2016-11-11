@@ -6,9 +6,7 @@
 package consensus;
 
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 
@@ -22,7 +20,7 @@ public class PHYTree implements Serializable {
 	
 	public ArrayList<PHYNode> treeNodes;
 	public HashMap<PHYNode, ArrayList<PHYNode>> treeEdges;
-	protected double errorScore = -1;
+	protected double weight = 1;
 	
 	public PHYTree() {
 		treeNodes = new ArrayList<PHYNode>();
@@ -144,9 +142,9 @@ public class PHYTree implements Serializable {
 		String s = "";
 		for(PHYNode n : treeNodes) {
 			if(n.getSNVGroup() == null) continue;
-    		ArrayList<SNVEntry> snvs = n.getSNVs(n.getSNVGroup().getSNVs());
+    		ArrayList<SNVEntry> snvs = n.getSNVs();
     		s += n.getNodeId();
-    		s += "\t" + n.getSNVGroup().getTag();
+    		s += "\t" + n.getSampleProfile().getTag();
     		for(SNVEntry snv : snvs) {
     			s += "\t" + snv.getDescription();
         	}
@@ -176,8 +174,8 @@ public class PHYTree implements Serializable {
 		//indent += "     ";	
 		indent += ".....";	
 		
-		if(n.getSNVGroup().containsSample(sampleId)) {
-			lineage.append(indent + n.getSNVGroup().getTag() + ": " + n.getCluster().getId() + "\n");
+		if(n.getSampleProfile().containsSample(sampleId)) {
+			lineage.append(indent + n.toString() + "\n");
 		}
 		if(treeEdges.get(n) != null) {
 			for(PHYNode nbr : treeEdges.get(n)) {
@@ -187,9 +185,9 @@ public class PHYTree implements Serializable {
 	}
 	
 	public void getLineageClusters(ArrayList<PHYNode> path, ArrayList<ArrayList<PHYNode>> clones, PHYNode n, int sampleId) {
-		if(n.getSNVGroup() != null && n.getSNVGroup().containsSample(sampleId)) {
+		if(n.getSampleProfile() != null && n.getSampleProfile().containsSample(sampleId)) {
 			path.add(n);
-		} else if(n.getSNVGroup() != null && !n.getSNVGroup().containsSample(sampleId)) {
+		} else if(n.getSampleProfile() != null && !n.getSampleProfile().containsSample(sampleId)) {
 			return;
 		}
 		if(treeEdges.get(n) != null) {
@@ -199,7 +197,7 @@ public class PHYTree implements Serializable {
 				getLineageClusters(new ArrayList<PHYNode>(path), clones, nbr, sampleId);
 				int size2 = clones.size();
 				if(size1 == size2) {
-					if(nbr.getSNVGroup() != null && nbr.getSNVGroup().containsSample(sampleId)) {
+					if(nbr.getSampleProfile() != null && nbr.getSampleProfile().containsSample(sampleId)) {
 						clone.add(nbr);
 						clones.add(clone);
 					}

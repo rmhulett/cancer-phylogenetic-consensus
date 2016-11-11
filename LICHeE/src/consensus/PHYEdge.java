@@ -5,6 +5,7 @@
 
 package consensus;
 
+
 /**
  * Edge in the phylogenetic constraint network
  */
