@@ -73,10 +73,10 @@ public class SampleProfile implements Serializable {
 	}
 	
 	public boolean equals(Object o) {
-		if(!(o instanceof SNVGroup)) {
+		if(!(o instanceof SampleProfile)) {
 			return false;
 		}
-		SNVGroup g = (SNVGroup) o;
+		SampleProfile g = (SampleProfile) o;
 		if(this.tag == g.tag) {
 			return true;
 		} else {

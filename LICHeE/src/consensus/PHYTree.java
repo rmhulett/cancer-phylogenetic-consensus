@@ -141,7 +141,7 @@ public class PHYTree implements Serializable {
 	public String getNodeSNVString() {
 		String s = "";
 		for(PHYNode n : treeNodes) {
-			if(n.getSNVGroup() == null) continue;
+			if(n.getSampleProfile() == null) continue;
     		ArrayList<SNVEntry> snvs = n.getSNVs();
     		s += n.getNodeId();
     		s += "\t" + n.getSampleProfile().getTag();

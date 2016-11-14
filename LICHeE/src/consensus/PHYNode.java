@@ -92,7 +92,7 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 		return nodeId;
 	}
 	
-	public SNVGroup getSampleProfile() {
+	public SampleProfile getSampleProfile() {
 		return sampleProfile;
 	}
 	
@@ -112,12 +112,12 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 	public String toString() {
 		String node = "Node " + nodeId + ": ";
 		if(!isLeaf && !isRoot) {
-			node += "group tag = " + snvGroup.getTag() + ", ";
-			node += "["
+			node += "group tag = " + sampleProfile.getTag() + ", ";
+			node += "[";
 			for (int i = 0; i < snvs.size(); i++) {
-				node += snvs.get(i).toString() + ", "
+				node += snvs.get(i).toString() + ", ";
 			}
-			node += "]"
+			node += "]";
 		} else if(isLeaf) {
 			node += "leaf sample id = " + leafSampleId;
 		} 
@@ -142,11 +142,11 @@ public class PHYNode implements Serializable, Comparable<PHYNode> {
 		String node = "";
 		if(!isLeaf && !isRoot) {
 			node += "Group: " + sampleProfile.getTag() + "\n";
-			node += "["
+			node += "[";
 			for (int i = 0; i < snvs.size(); i++) {
-				node += snvs.get(i) + ", "
+				node += snvs.get(i) + ", ";
 			}
-			node += "]"
+			node += "]";
 		} else if(isLeaf) {
 			node += "sample " + leafSampleId;
 		} else {
