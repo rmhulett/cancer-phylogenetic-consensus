@@ -6,6 +6,7 @@
 package consensus;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Comparator;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
@@ -44,6 +45,37 @@ public class Test {
 		tree.addEdge(internal, leaf);
 
 		System.out.println(tree);
+
+		BitSet b = new BitSet();
+		b.set(2);
+		Cluster c = new Cluster(b);
+
+		System.out.println(c);
+
+		ArrayList<PHYNode> mutationGroups = new ArrayList<PHYNode>();
+		ArrayList<SNVEntry> snvEntries = new ArrayList<SNVEntry>();
+		snvEntries.add(new SNVEntry("line1", 1));
+		snvEntries.add(new SNVEntry("line2", 2));
+		PHYNode mut1 = new PHYNode(new SampleProfile("10"), snvEntries, 1);
+		PHYNode mut2 = new PHYNode(new SampleProfile("01"), new ArrayList<SNVEntry>(), 2);
+		mutationGroups.add(mut1);
+		mutationGroups.add(mut2);
+
+		ArrayList<Cluster> clusters = new ArrayList<Cluster>();
+		BitSet bs1 = new BitSet();
+		bs1.set(0);
+		bs1.set(1);
+		BitSet bs2 = new BitSet();
+		bs2.set(1);
+		Cluster c1 = new Cluster(bs1, 1, 0.5, 0);
+		Cluster c2 = new Cluster(bs2, 1, 0.25, 1);
+		clusters.add(c1);
+		clusters.add(c2);
+
+		ClusterNetwork network = new ClusterNetwork();
+		network.constructNetwork(mutationGroups, clusters);
+
+		System.out.println(network);
 	}
 
 	private static final String TREES_TXT_FILE_EXTENSION = ".trees.txt";
